@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC } from "react";
 
-const BookList = () => {
+const BookList: FC = () => {
   return (
     <>
       <div className="bg-yellow-300 border-yellow-500 border-2 shadow px-4 py-2 ">

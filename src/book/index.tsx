@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import BookList from "./book-list";
 import BookForm from "./form";
 
-const Book: FC = () => {
+const Book = () => {
   return (
     <div className="max-w-4xl mx-auto flex gap-2">
       <div className="w-2/6 space-y-2">
