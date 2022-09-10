@@ -1,6 +1,38 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase.config";
+
+interface IBook {
+  id: string;
+  title: string;
+  author: string;
+  numberOfPages: number;
+  publishedYear: number;
+  synopsis: string;
+}
 
 const BookList: FC = () => {
+  const [books, setBooks] = useState<IBook[]>([]);
+
+  const getBooks = async () => {
+    const querySnapshot = await getDocs(collection(db, "books"));
+
+    var book: IBook[] = querySnapshot.docs.map((doc) => ({
+      title: doc.data().title,
+      author: doc.data().author,
+      numberOfPages: doc.data().number_of_pages,
+      publishedYear: doc.data().published_year,
+      synopsis: doc.data().synopsis,
+      id: doc.id,
+    }));
+
+    setBooks(book);
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
+
   return (
     <>
       <div className="bg-yellow-300 border-yellow-500 border-2 shadow px-4 py-2 ">
@@ -17,14 +49,17 @@ const BookList: FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white">
-            <tr className="text-gray-700">
-              <td className="px-4 py-2 border">
-                Crud using react and firebase
-              </td>
-              <td className="px-4 py-2 border">John Doe</td>
-              <td className="px-4 py-2 border">250</td>
-              <td className="px-4 py-2 border">2015</td>
-            </tr>
+            {books &&
+              books.map((data, index) => {
+                return (
+                  <tr className="text-gray-700" key={index}>
+                    <td className="px-4 py-2 border">{data.id}</td>
+                    <td className="px-4 py-2 border">{data.author}</td>
+                    <td className="px-4 py-2 border">{data.numberOfPages}</td>
+                    <td className="px-4 py-2 border">{data.publishedYear}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
