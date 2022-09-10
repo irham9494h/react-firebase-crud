@@ -1,15 +1,27 @@
 import React, { FC, useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase.config";
 
 const BookForm: FC = () => {
-  const [bookTitle, setBookTitle] = useState<string>("");
-  const [Author, setAuthor] = useState<string>("");
+  const [bookTitle, setBookTitle] = useState<string>();
+  const [author, setAuthor] = useState<string>();
   const [numberOfPages, setNumberOfPages] = useState<number>(0);
   const [publishedYear, setPublishedYear] = useState<number>(0);
-  const [synopsis, setSynopsis] = useState<string>("");
+  const [synopsis, setSynopsis] = useState<string>();
 
   const handleAddDocument = async () => {
     try {
+      const book = await addDoc(collection(db, "books"), {
+        title: bookTitle,
+        author: author,
+        number_of_pages: numberOfPages,
+        published_year: publishedYear,
+        synopsis: synopsis,
+      });
+
+      if (book) {
+        hanldeResetForm();
+      }
     } catch (error) {}
   };
 
@@ -39,7 +51,7 @@ const BookForm: FC = () => {
           type="text"
           placeholder="Author"
           className="w-full px-4 py-1 ring-2"
-          value={Author}
+          value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
         <input
@@ -69,7 +81,10 @@ const BookForm: FC = () => {
         />
 
         <div className="space-x-2">
-          <button className="px-4 py-1 bg-blue-300 border-2 border-blue-600">
+          <button
+            className="px-4 py-1 bg-blue-300 border-2 border-blue-600"
+            onClick={handleAddDocument}
+          >
             Save
           </button>
           <button
